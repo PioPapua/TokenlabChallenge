@@ -21,6 +21,16 @@
             android:padding="16dp">
 
             <ImageView
+                android:id="@+id/status_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:movieApiStatus="@{viewModel.status}" />
+
+            <ImageView
                 android:id="@+id/main_photo_image"
                 android:layout_width="0dp"
                 android:layout_height="266dp"
@@ -28,7 +38,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:imageUrl="@{viewModel.selectedProperty.imgSrcUrl}"
+                app:imageUrl="@{viewModel.detailProperty.imgSrcUrl}"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
@@ -40,7 +50,7 @@
                 android:textSize="39sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/main_photo_image"
-                tools:text="Title" />
+                tools:text="@{viewModel.detailProperty.title}" />
 
             <TextView
                 android:id="@+id/overview_text"
@@ -51,7 +61,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_text"
-                tools:text="Overview" />
+                tools:text="@{viewModel.detailProperty.overview}"/>
 
             <TextView
                 android:id="@+id/country_text"
@@ -62,7 +72,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/overview_text"
-                tools:text="Countries" />
+                tools:text="Languages" />
 
             <TextView
                 android:id="@+id/language_text"
@@ -73,7 +83,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/country_text"
-                tools:text="Original Language" />
+                tools:text="@{viewModel.detailProperty.original_language}" />
 
             <TextView
                 android:id="@+id/vote_average_text"
@@ -84,7 +94,18 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/language_text"
-                tools:text="Average vote:" />
+                tools:text="@{String.valueOf(viewModel.detailProperty.vote_average)}" />
+
+            <TextView
+                android:id="@+id/release_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#de000000"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vote_average_text"
+                tools:text="@{String.valueOf(viewModel.detailProperty.release_date)}" />
 
             <TextView
                 android:id="@+id/vote_count_text"
@@ -94,8 +115,8 @@
                 android:textColor="#de000000"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vote_average_text"
-                tools:text="Number of votes:" />
+                app:layout_constraintTop_toBottomOf="@+id/release_date_text"
+                tools:text="@{String.valueOf(viewModel.detailProperty.count)}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

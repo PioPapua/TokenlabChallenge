@@ -2,7 +2,6 @@ package com.example.tokenlabchallenge
 
 import android.view.View
 import android.widget.ImageView
-import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -10,11 +9,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.tokenlabchallenge.movie.MovieViewModel
 import com.example.tokenlabchallenge.movie.ImageGridAdapter
 import com.example.tokenlabchallenge.network.MovieProperty
+import androidx.core.net.toUri as toUri1
 
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
-        val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+        val imgUri = imgUrl.toUri1().buildUpon().scheme("https").build()
         Glide.with(imgView.context)
             .load(imgUri)
             .apply(RequestOptions()

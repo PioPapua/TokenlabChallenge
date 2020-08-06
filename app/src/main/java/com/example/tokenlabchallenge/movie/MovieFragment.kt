@@ -31,20 +31,13 @@ class MovieFragment : Fragment() {
             viewModel.displayPropertyDetails(it)
         })
 
-        viewModel.navigateToSelectedProperty.observe(this, Observer {
+        viewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
             if ( null != it ) {
                 this.findNavController().navigate(MovieFragmentDirections.actionShowDetail(it))
                 viewModel.displayPropertyDetailsComplete()
             }
         })
 
-//        setHasOptionsMenu(true)
         return binding.root
     }
-
-//    // Inflates the overflow menu that contains filtering options.
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.movies_menu, menu)
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
 }

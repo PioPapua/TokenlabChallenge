@@ -25,7 +25,6 @@ class MovieViewModel : ViewModel() {
         get() = _properties
 
     private val _navigateToSelectedProperty = MutableLiveData<MovieProperty>()
-
     val navigateToSelectedProperty: LiveData<MovieProperty>
         get() = _navigateToSelectedProperty
 
@@ -41,7 +40,7 @@ class MovieViewModel : ViewModel() {
     private fun getMoviesProperties() {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
-            val getPropertiesDeferred = MovieApi.retrofitService.getMovies()
+            val getPropertiesDeferred = MovieApi.retrofitService.getMoviesAsync()
             try {
                 _status.value = MovieApiStatus.LOADING
 
