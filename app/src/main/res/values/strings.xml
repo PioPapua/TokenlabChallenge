@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TokenlabChallenge</string>
+
+    <string name="menu_option_1">Option 1</string>
+    <string name="menu_option_2">Option 2</string>
+    <string name="menu_option_3">Option 3</string>
+</resources>
