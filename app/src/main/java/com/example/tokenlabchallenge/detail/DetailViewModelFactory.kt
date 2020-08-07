@@ -3,14 +3,15 @@ package com.example.tokenlabchallenge.detail
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.tokenlabchallenge.network.MovieProperty
+import com.example.tokenlabchallenge.database.DetailPropertyDao
 
 class DetailViewModelFactory(
-    private val movieProperty: MovieProperty,
+    private val dataSource: DetailPropertyDao,
+    private val moviePropertyId: Int,
     private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            return DetailViewModel(movieProperty, application) as T
+            return DetailViewModel(dataSource, moviePropertyId, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

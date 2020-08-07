@@ -23,7 +23,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="selectedProperty"
-            app:argType="com.example.tokenlabchallenge.network.MovieProperty"/>
+            app:argType="integer"/>
     </fragment>
 
 </navigation>

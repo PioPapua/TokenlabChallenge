@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.tokenlabchallenge.movie.MovieViewModel
 import com.example.tokenlabchallenge.movie.ImageGridAdapter
-import com.example.tokenlabchallenge.network.MovieProperty
+import com.example.tokenlabchallenge.database.MovieProperty
 import androidx.core.net.toUri as toUri1
 
 @BindingAdapter("imageUrl")

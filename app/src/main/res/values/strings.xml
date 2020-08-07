@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">TokenlabChallenge</string>
-
-    <string name="menu_option_1">Option 1</string>
-    <string name="menu_option_2">Option 2</string>
-    <string name="menu_option_3">Option 3</string>
+    <string name="app_name">Tokenlab Challenge</string>
+    <string name="status">Current status</string>
+    <string name="photo_image">Main Photo Image</string>
+    <string name="production_countries">Production Countries: </string>
+    <string name="original_language">Original Language: </string>
+    <string name="vote_average">Average vote: </string>
+    <string name="release_date">Release date: </string>
+    <string name="count">Number of votes: </string>
 </resources>

@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tokenlabchallenge.databinding.GridViewItemBinding
-import com.example.tokenlabchallenge.network.MovieProperty
+import com.example.tokenlabchallenge.database.MovieProperty
 
 //This class implements a RecyclerView ListAdapter which uses Data Binding to present data.
-class ImageGridAdapter (val onClickListener: OnClickListener) : ListAdapter<MovieProperty, ImageGridAdapter.MoviePropertyViewHolder>(DiffCallback) {
+class ImageGridAdapter (private val onClickListener: OnClickListener) : ListAdapter<MovieProperty, ImageGridAdapter.MoviePropertyViewHolder>(DiffCallback) {
 
     // This class takes the binding variable from the associated GridViewItem, which gives it access to the full MovieProperty information
     class MoviePropertyViewHolder(private var binding: GridViewItemBinding):

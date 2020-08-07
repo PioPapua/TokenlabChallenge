@@ -28,6 +28,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/status"
                 app:movieApiStatus="@{viewModel.status}" />
 
             <ImageView
@@ -38,6 +39,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/photo_image"
                 app:imageUrl="@{viewModel.detailProperty.imgSrcUrl}"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
@@ -64,7 +66,7 @@
                 tools:text="@{viewModel.detailProperty.overview}"/>
 
             <TextView
-                android:id="@+id/country_text"
+                android:id="@+id/countries_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -72,7 +74,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/overview_text"
-                tools:text="Languages" />
+                tools:text="@{@string/production_countries + String.valueOf(viewModel.detailProperty.production_countries)}" />
 
             <TextView
                 android:id="@+id/language_text"
@@ -82,8 +84,8 @@
                 android:textColor="#de000000"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/country_text"
-                tools:text="@{viewModel.detailProperty.original_language}" />
+                app:layout_constraintTop_toBottomOf="@+id/countries_text"
+                tools:text="@{@string/original_language + viewModel.detailProperty.original_language}" />
 
             <TextView
                 android:id="@+id/vote_average_text"
@@ -94,7 +96,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/language_text"
-                tools:text="@{String.valueOf(viewModel.detailProperty.vote_average)}" />
+                tools:text="@{@string/vote_average + String.valueOf(viewModel.detailProperty.vote_average)}" />
 
             <TextView
                 android:id="@+id/release_date_text"
@@ -105,7 +107,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_text"
-                tools:text="@{String.valueOf(viewModel.detailProperty.release_date)}" />
+                tools:text="@{@string/release_date + String.valueOf(viewModel.detailProperty.release_date)}" />
 
             <TextView
                 android:id="@+id/vote_count_text"
@@ -116,7 +118,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/release_date_text"
-                tools:text="@{String.valueOf(viewModel.detailProperty.count)}" />
+                tools:text="@{@string/count + String.valueOf(viewModel.detailProperty.count)}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
