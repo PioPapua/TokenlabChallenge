@@ -27,7 +27,7 @@ class DetailProperty(
     val release_date: Date,
     val title: String,
     val vote_average: Float,
-    val count: Int?
+    val vote_count: Int
 ) : Parcelable
 
 @Parcelize

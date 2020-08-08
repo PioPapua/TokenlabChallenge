@@ -86,11 +86,13 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$version_recyclerview"
 
     // Room
-
     implementation "androidx.room:room-runtime:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$version_room"
     // Test helpers
     testImplementation "androidx.room:room-testing:$version_room"
+
+    // Design Material
+    implementation "com.google.android.material:material:$version_material"
 }

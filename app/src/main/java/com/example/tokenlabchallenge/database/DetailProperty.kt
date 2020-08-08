@@ -15,5 +15,5 @@ data class DetailProperty constructor(
     val release_date: Date,
     val title: String,
     val vote_average: Float,
-    val count: Int?
+    val vote_count: Int
 )

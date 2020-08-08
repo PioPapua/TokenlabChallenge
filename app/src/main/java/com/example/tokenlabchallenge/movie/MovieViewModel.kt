@@ -19,6 +19,10 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
     val status: LiveData<MovieApiStatus>
         get() = _status
 
+    private val _statusConnection = MutableLiveData<MovieApiStatus>()
+    val statusConnection: LiveData<MovieApiStatus>
+        get() = _statusConnection
+
     private val _properties = MutableLiveData<List<MovieRoom>>()
     val properties: LiveData<List<MovieRoom>>
         get() = _properties
@@ -32,6 +36,7 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
 
     // Call getMoviesProperties() on initialize to be able to display status immediately.
     init {
+        _statusConnection.value = MovieApiStatus.LOADING
         getMoviesProperties()
     }
 
@@ -41,8 +46,6 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
                 // Get the Deferred object for our Retrofit request
                 val getPropertiesDeferred = MovieApi.retrofitService.getMoviesAsync()
                 try {
-                    _status.postValue(MovieApiStatus.LOADING)
-
                     // Await the completion of our Retrofit request
                     val listResult = getPropertiesDeferred.await()
                     // Create MovieProperty compatible with Room and add it to TokenlabChallengeDatabase if it doesn't exist.
@@ -61,12 +64,15 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
                     }
                     _properties.postValue(movieDao.getAllMovies())
                     _status.postValue(MovieApiStatus.DONE)
+                    _statusConnection.postValue(MovieApiStatus.DONE)
                 } catch (e: Exception) {
                     try {
-                        _status.postValue(MovieApiStatus.LOADING)
                         _properties.postValue(movieDao.getAllMovies())
-                    } catch (e: Exception) {
-                        _status.postValue(MovieApiStatus.ERROR)
+                        _status.postValue(MovieApiStatus.DONE)
+                        _statusConnection.postValue(MovieApiStatus.DONE)
+                        _properties.value ?: throw IllegalArgumentException("Movies required")
+                    } catch (e: IllegalArgumentException) {
+                        _statusConnection.postValue(MovieApiStatus.ERROR)
                     }
                 }
             }
