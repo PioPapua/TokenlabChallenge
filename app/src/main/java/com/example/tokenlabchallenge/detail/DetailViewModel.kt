@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.tokenlabchallenge.database.DetailPropertyDao
 import com.example.tokenlabchallenge.movie.MovieViewModel
+import com.example.tokenlabchallenge.network.DetailProperty as DetailAPI
 import com.example.tokenlabchallenge.network.MovieApi
 import kotlinx.coroutines.*
 import java.text.DateFormat
@@ -43,78 +44,62 @@ class DetailViewModel (private val detailDao: DetailPropertyDao, moviePropertyId
 
     init {
         _statusConnection.value = MovieViewModel.MovieApiStatus.LOADING
+        _status.value = MovieViewModel.MovieApiStatus.LOADING
         getMovieDetails(moviePropertyId)
     }
 
     private fun getMovieDetails(idMovie: Int) {
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                try {
-                    // Get the Deferred object for our Retrofit request
-                    val getPropertiesDeferred =
-                        MovieApi.retrofitService.getMovieDetailByIdAsync(idMovie)
-                    _status.postValue(MovieViewModel.MovieApiStatus.LOADING)
-                    // Await the completion of our Retrofit request
-
-                    val result = getPropertiesDeferred.await() // Detail property from Retrofit
-                    var currentDetail =
-                        detailDao.getDetailById(result.id) // Detail property from Room
-
-                    // Create and insert result in Room DB if it doesn't already exist.
-                    val countriesList = mutableListOf<String>()
-                    for (item in result.production_countries) {
-                        countriesList.add(item.name)
-                    }
-                    if (currentDetail == null) {
-                        currentDetail = DetailRoom(
-                            id = result.id,
-                            original_language = result.original_language,
-                            overview = result.overview,
-                            imgSrcUrl = result.imgSrcUrl,
-                            production_countries = countriesList,
-                            release_date = result.release_date,
-                            title = result.title,
-                            vote_average = result.vote_average,
-                            vote_count = result.vote_count
-                        )
-                        detailDao.insert(currentDetail)
-                    }
+                var roomDetail = detailDao.getDetailById(idMovie)
+                if (getDetailFromAPI(idMovie) == null && roomDetail == null){
+                    _statusConnection.postValue(MovieViewModel.MovieApiStatus.ERROR)
+                } else {
+                    // Update Room values in case something has been changed when calling the API.
+                    roomDetail = detailDao.getDetailById(idMovie)
                     // Set current values
-                    _detailProperty.postValue(currentDetail)
-                    _releaseDate.postValue(simpleDateFromString(currentDetail.release_date.toString()))
-                    _voteAverage.postValue(currentDetail.vote_average.toString())
-                    _count.postValue(currentDetail.vote_count.toString())
-                    _countries.postValue(countriesList.toString()
+                    _detailProperty.postValue(roomDetail)
+                    _releaseDate.postValue(simpleDateFromString(roomDetail!!.release_date.toString()))
+                    _voteAverage.postValue(roomDetail.vote_average.toString())
+                    _count.postValue(roomDetail.vote_count.toString())
+                    _countries.postValue(roomDetail.production_countries.toString()
                         .replace("[", "")
                         .replace("]", "")
                     )
-
                     // Set status
                     _status.postValue(MovieViewModel.MovieApiStatus.DONE)
                     _statusConnection.postValue(MovieViewModel.MovieApiStatus.DONE)
-                } catch (e: Exception) {
-                    try {
-                        val localDetail = detailDao.getDetailById(idMovie)
-                        _status.postValue(MovieViewModel.MovieApiStatus.LOADING)
-
-                        // Set current values
-                        _detailProperty.postValue(localDetail)
-                        _voteAverage.postValue(localDetail?.vote_average.toString())
-                        _releaseDate.postValue(simpleDateFromString(localDetail?.release_date.toString()))
-                        _count.postValue(localDetail?.vote_count.toString())
-                        _countries.postValue(localDetail?.production_countries.toString()
-                            .replace("[", "")
-                            .replace("]", "")
-                        )
-
-                        // Set status
-                        _status.postValue(MovieViewModel.MovieApiStatus.DONE)
-                        _statusConnection.postValue(MovieViewModel.MovieApiStatus.DONE)
-                    } catch (e: Exception) {
-                        _statusConnection.postValue(MovieViewModel.MovieApiStatus.ERROR)
-                    }
                 }
             }
+        }
+    }
+
+    private suspend fun getDetailFromAPI(idMovie: Int): DetailAPI? {
+        try {
+            val detail = MovieApi.retrofitService.getMovieDetailByIdAsync(idMovie).await()
+            val countriesList = mutableListOf<String>()
+            for (item in detail.production_countries) {
+                countriesList.add(item.name)
+            }
+            var currentDetail = detailDao.getDetailById(detail.id)
+            if (currentDetail == null) {
+                currentDetail = DetailRoom(
+                    id = detail.id,
+                    original_language = detail.original_language,
+                    overview = detail.overview,
+                    imgSrcUrl = detail.imgSrcUrl,
+                    production_countries = countriesList,
+                    release_date = detail.release_date,
+                    title = detail.title,
+                    vote_average = detail.vote_average,
+                    vote_count = detail.vote_count
+                )
+                detailDao.insert(currentDetail)
+            }
+            return detail
+        } catch (e: Exception){
+            e.printStackTrace()
+            return null
         }
     }
 

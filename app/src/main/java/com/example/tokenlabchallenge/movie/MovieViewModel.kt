@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.tokenlabchallenge.database.MoviePropertyDao
 import com.example.tokenlabchallenge.database.MovieProperty as MovieRoom
 import com.example.tokenlabchallenge.network.MovieApi
+import com.example.tokenlabchallenge.network.MovieProperty as MovieAPI
 import kotlinx.coroutines.*
+import java.lang.Exception
 
 class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) : AndroidViewModel(app) {
 
@@ -43,39 +45,38 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
     private fun getMoviesProperties() {
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                // Get the Deferred object for our Retrofit request
-                val getPropertiesDeferred = MovieApi.retrofitService.getMoviesAsync()
-                try {
-                    // Await the completion of our Retrofit request
-                    val listResult = getPropertiesDeferred.await()
-                    // Create MovieProperty compatible with Room and add it to TokenlabChallengeDatabase if it doesn't exist.
-                    for (item in listResult) {
-                        if (movieDao.getMovieById(item.id) == null) {
-                            val movieRoom = MovieRoom(
-                                id = item.id,
-                                vote_average = item.vote_average,
-                                title = item.title,
-                                imgSrcUrl = item.imgSrcUrl,
-                                release_date = item.release_date,
-                                genres = item.genres
-                            )
-                            movieDao.insert(movieRoom)
-                        }
-                    }
-                    _properties.postValue(movieDao.getAllMovies())
+                if (getMoviesFromAPI().isNullOrEmpty() && movieDao.getAllMovies().isNullOrEmpty()){
+                    _statusConnection.postValue(MovieApiStatus.ERROR)
+                } else {
+                    _properties.postValue (movieDao.getAllMovies())
                     _status.postValue(MovieApiStatus.DONE)
                     _statusConnection.postValue(MovieApiStatus.DONE)
-                } catch (e: Exception) {
-                    try {
-                        _properties.postValue(movieDao.getAllMovies())
-                        _status.postValue(MovieApiStatus.DONE)
-                        _statusConnection.postValue(MovieApiStatus.DONE)
-                        _properties.value ?: throw IllegalArgumentException("Movies required")
-                    } catch (e: IllegalArgumentException) {
-                        _statusConnection.postValue(MovieApiStatus.ERROR)
-                    }
                 }
             }
+        }
+    }
+
+    private suspend fun getMoviesFromAPI(): List<MovieAPI>?{
+        try {
+            // Await the completion of our Retrofit request, and get the Deferred object
+            val movies =  MovieApi.retrofitService.getMoviesAsync().await()
+            for (item in movies) {
+                if (movieDao.getMovieById(item.id) == null) {
+                    val movieRoom = MovieRoom(
+                        id = item.id,
+                        vote_average = item.vote_average,
+                        title = item.title,
+                        imgSrcUrl = item.imgSrcUrl,
+                        release_date = item.release_date,
+                        genres = item.genres
+                    )
+                    movieDao.insert(movieRoom)
+                }
+            }
+            return movies
+        } catch (e: Exception){
+            e.printStackTrace()
+            return listOf()
         }
     }
 

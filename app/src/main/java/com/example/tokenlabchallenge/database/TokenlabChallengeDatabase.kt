@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 @Database(
     // Define every table on the Database
     entities = [MovieProperty::class, DetailProperty::class],
-    version = 3,
+    version = 1,
     exportSchema = false)
 
 @TypeConverters(Converters::class)
