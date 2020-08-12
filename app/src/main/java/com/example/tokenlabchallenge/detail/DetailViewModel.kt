@@ -55,7 +55,7 @@ class DetailViewModel (private val detailDao: DetailPropertyDao, moviePropertyId
                 if (getDetailFromAPI(idMovie) == null && roomDetail == null){
                     _statusConnection.postValue(MovieViewModel.MovieApiStatus.ERROR)
                 } else {
-                    // Update Room values in case something has been changed when calling the API.
+                    // Update roomDetail values in case something has been changed when calling the API.
                     roomDetail = detailDao.getDetailById(idMovie)
                     // Set current values
                     _detailProperty.postValue(roomDetail)
@@ -81,21 +81,22 @@ class DetailViewModel (private val detailDao: DetailPropertyDao, moviePropertyId
             for (item in detail.production_countries) {
                 countriesList.add(item.name)
             }
-            var currentDetail = detailDao.getDetailById(detail.id)
-            if (currentDetail == null) {
-                currentDetail = DetailRoom(
-                    id = detail.id,
-                    original_language = detail.original_language,
-                    overview = detail.overview,
-                    imgSrcUrl = detail.imgSrcUrl,
-                    production_countries = countriesList,
-                    release_date = detail.release_date,
-                    title = detail.title,
-                    vote_average = detail.vote_average,
-                    vote_count = detail.vote_count
-                )
+            val currentDetail = DetailRoom(
+                id = detail.id,
+                original_language = detail.original_language,
+                overview = detail.overview,
+                imgSrcUrl = detail.imgSrcUrl,
+                production_countries = countriesList,
+                release_date = detail.release_date,
+                title = detail.title,
+                vote_average = detail.vote_average,
+                vote_count = detail.vote_count
+            )
+            val roomDetail = detailDao.getDetailById(detail.id)
+            if (roomDetail == null) {
                 detailDao.insert(currentDetail)
-            }
+            } else
+                detailDao.update(currentDetail)
             return detail
         } catch (e: Exception){
             e.printStackTrace()

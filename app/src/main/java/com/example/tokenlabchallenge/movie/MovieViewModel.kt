@@ -61,17 +61,19 @@ class MovieViewModel(private val movieDao: MoviePropertyDao, app: Application) :
             // Await the completion of our Retrofit request, and get the Deferred object
             val movies =  MovieApi.retrofitService.getMoviesAsync().await()
             for (item in movies) {
+                val movieRoom = MovieRoom(
+                    id = item.id,
+                    vote_average = item.vote_average,
+                    title = item.title,
+                    imgSrcUrl = item.imgSrcUrl,
+                    release_date = item.release_date,
+                    genres = item.genres
+                )
                 if (movieDao.getMovieById(item.id) == null) {
-                    val movieRoom = MovieRoom(
-                        id = item.id,
-                        vote_average = item.vote_average,
-                        title = item.title,
-                        imgSrcUrl = item.imgSrcUrl,
-                        release_date = item.release_date,
-                        genres = item.genres
-                    )
                     movieDao.insert(movieRoom)
-                }
+                } else
+                    // Update local database, as some values could have changed since last connection.
+                    movieDao.update(movieRoom)
             }
             return movies
         } catch (e: Exception){
